@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Background Radial Gradient for Metallic Depth -->
+    <radialGradient id="bg-grad" cx="50%" cy="50%" r="70%" fx="50%" fy="50%">
+      <stop offset="0%" stop-color="#242423" />
+      <stop offset="60%" stop-color="#121211" />
+      <stop offset="100%" stop-color="#060605" />
+    </radialGradient>
+
+    <!-- Linear Gold Gradient for Luxurious Letterings -->
+    <linearGradient id="gold-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F3E09A" />
+      <stop offset="25%" stop-color="#D4AF37" />
+      <stop offset="50%" stop-color="#AA7F2A" />
+      <stop offset="75%" stop-color="#E5C158" />
+      <stop offset="100%" stop-color="#B89742" />
+    </linearGradient>
+
+    <!-- Subtle Drop Shadow to give 3D Elevation to Gold Monogram -->
+    <filter id="luxury-shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="3" dy="5" stdDeviation="6" flood-color="#000000" flood-opacity="0.65" />
+    </filter>
+
+    <!-- Gentle Glow for the Sparkles -->
+    <filter id="gold-glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Luxurious Rounded-Square Canvas Base (PWA compliant, safe-zone secure) -->
+  <rect width="512" height="512" rx="108" fill="url(#bg-grad)" />
+
+  <!-- Outer Delicate Gold Boundary Circle representing high-end premium jewelry craftsmanship -->
+  <circle cx="256" cy="256" r="215" fill="none" stroke="url(#gold-grad)" stroke-width="3" stroke-dasharray="2, 6" opacity="0.4" />
+  <circle cx="256" cy="256" r="202" fill="none" stroke="url(#gold-grad)" stroke-width="1.5" opacity="0.8" />
+  <circle cx="256" cy="256" r="192" fill="none" stroke="url(#gold-grad)" stroke-width="4" filter="url(#luxury-shadow)" />
+
+  <!-- Interlocking Monogram UA -->
+  <g filter="url(#luxury-shadow)">
+    <!-- Letter 'U' - Outer Elegant Sweep -->
+    <path d="M 165,180 L 165,270 C 165,330 200,360 256,360 C 312,360 347,330 347,270 L 347,180" 
+          fill="none" 
+          stroke="url(#gold-grad)" 
+          stroke-width="14" 
+          stroke-linecap="round" />
+          
+    <!-- Serif Flairs for 'U' Left & Right Tops -->
+    <path d="M 145,180 L 185,180" fill="none" stroke="url(#gold-grad)" stroke-width="8" stroke-linecap="round" />
+    <path d="M 327,180 L 367,180" fill="none" stroke="url(#gold-grad)" stroke-width="8" stroke-linecap="round" />
+
+    <!-- Letter 'A' - Layered on Top of Left Leg of O - Slanted lines -->
+    <!-- Ascent -->
+    <path d="M 210,340 L 256,170 L 302,340" 
+          fill="none" 
+          stroke="url(#gold-grad)" 
+          stroke-width="14" 
+          stroke-linecap="round" 
+          stroke-linejoin="round" />
+          
+    <!-- Horizontal Crossbar for 'A' -->
+    <path d="M 226,290 L 286,290" 
+          fill="none" 
+          stroke="url(#gold-grad)" 
+          stroke-width="10" 
+          stroke-linecap="round" />
+
+    <!-- Serif Flairs at Base of 'A' -->
+    <path d="M 195,340 L 225,340" fill="none" stroke="url(#gold-grad)" stroke-width="6" stroke-linecap="round" />
+    <path d="M 287,340 L 317,340" fill="none" stroke="url(#gold-grad)" stroke-width="6" stroke-linecap="round" />
+  </g>
+
+  <!-- Luxury Brand Sparkles/Stars (Representing Crystals/Diamonds/Sparks of Gold) -->
+  <g fill="url(#gold-grad)" filter="url(#gold-glow)">
+    <!-- Top-Right Sparkle -->
+    <path d="M 370,165 Q 385,165 385,150 Q 385,165 400,165 Q 385,165 385,180 Q 385,165 370,165 Z" />
+    <!-- Bottom-Left Tiny Sparkle -->
+    <path d="M 125,310 Q 135,310 135,300 Q 135,310 145,310 Q 135,310 135,320 Q 135,310 125,310 Z" transform="scale(0.8) translate(20, 20)" />
+    <!-- Center Top Accent Dot -->
+    <circle cx="256" cy="130" r="4" />
+  </g>
+</svg>
