@@ -20,7 +20,7 @@ export const Footer: React.FC = () => {
         <div>
           <h3 className="text-[10px] uppercase tracking-[0.4em] font-bold text-brand-gold mb-8">Navegação</h3>
           <ul className="space-y-4 text-neutral-500 text-[11px] uppercase tracking-[0.25em] font-medium">
-            <li><a href="/colecoes" className="hover:text-brand-gold transition-colors">Coleções</a></li>
+            <li><a href="/" className="hover:text-brand-gold transition-colors">Início</a></li>
             <li><a href="/estoque" className="hover:text-brand-gold transition-colors">Nossas Joias</a></li>
             <li><a href="/#featured" className="hover:text-brand-gold transition-colors">Destaques</a></li>
           </ul>

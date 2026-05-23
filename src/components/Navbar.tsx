@@ -76,12 +76,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onCartOpen }) => {
 
   return (
     <nav className="fixed top-0 left-0 w-full z-50 bg-brand-offwhite/90 backdrop-blur-md border-b border-brand-gold/20">
-      {!isSupabaseConfigured && (
-        <div className="bg-amber-600 text-neutral-100 text-[9px] sm:text-[10px] text-center font-sans py-1.5 px-3 uppercase tracking-[0.1em] font-medium flex items-center justify-center gap-2 border-b border-gold/15">
-          <span>⚠️ BANCO OFFLINE: SUPABASE NÃO CONFIGURADO</span>
-          <span className="hidden lg:inline opacity-80 font-normal">| Adicione VITE_SUPABASE_URL e VITE_SUPABASE_ANON_KEY no painel da Vercel ou no arquivo .env para renderizar dados dinâmicos.</span>
-        </div>
-      )}
       <div className="max-w-7xl mx-auto px-4 md:px-12 h-20 md:h-24 flex items-center justify-between">
         {/* Left Section: Mobile Menu & Desktop Links */}
         <div className="flex-1 flex items-center">
@@ -94,7 +88,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onCartOpen }) => {
           
           <div className="hidden md:flex gap-4 lg:gap-8 items-center text-[9.5px] uppercase tracking-[0.25em] font-medium text-[#1A1A1A]">
             <Link to="/" className="hover:text-brand-gold transition-colors">Início</Link>
-            <Link to="/colecoes" className="hover:text-brand-gold transition-colors">Coleções</Link>
             <Link to="/estoque" className="hover:text-brand-gold transition-colors">Nossas Joias</Link>
             
             <div className="h-3 w-[1px] bg-brand-gold/20 mx-1" />
@@ -323,14 +316,30 @@ export const Navbar: React.FC<NavbarProps> = ({ onCartOpen }) => {
           <div className="flex items-center">
             <button 
               onClick={onCartOpen}
-              className="w-10 h-10 md:w-11 md:h-11 rounded-full border border-brand-gold/20 flex items-center justify-center relative text-neutral-800 hover:text-brand-gold hover:border-brand-gold transition-all bg-white shadow-sm"
+              className="w-10 h-10 md:w-11 md:h-11 rounded-full border border-brand-gold/20 flex items-center justify-center relative text-neutral-800 hover:text-brand-gold hover:border-brand-gold transition-all bg-white shadow-sm cursor-pointer"
             >
-              <ShoppingBag size={18} className="stroke-[1.5]" />
-              {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-brand-gold text-white text-[9px] min-w-4 h-4 px-1 flex items-center justify-center rounded-full font-bold shadow-sm">
-                  {cartCount}
-                </span>
-              )}
+              <motion.div
+                key={cartCount}
+                animate={{ scale: [1, 1.2, 0.9, 1] }}
+                transition={{ duration: 0.35, ease: "easeOut" }}
+                className="flex items-center justify-center"
+              >
+                <ShoppingBag size={18} className="stroke-[1.5]" />
+              </motion.div>
+              <AnimatePresence mode="popLayout">
+                {cartCount > 0 && (
+                  <motion.span
+                    key={cartCount}
+                    initial={{ scale: 0.4, opacity: 0 }}
+                    animate={{ scale: [1.4, 0.9, 1], opacity: 1 }}
+                    exit={{ scale: 0.4, opacity: 0 }}
+                    transition={{ type: "spring", stiffness: 450, damping: 14 }}
+                    className="absolute -top-1 -right-1 bg-brand-gold text-white text-[9px] min-w-4 h-4 px-1 flex items-center justify-center rounded-full font-bold shadow-sm"
+                  >
+                    {cartCount}
+                  </motion.span>
+                )}
+              </AnimatePresence>
             </button>
           </div>
         </div>
@@ -393,9 +402,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onCartOpen }) => {
               </div>
             </form>
 
-            <Link to="/colecoes" onClick={() => setIsMenuOpen(false)} className="text-xl font-serif italic text-neutral-700 hover:text-brand-gold">
-              Coleções
-            </Link>
             <Link to="/estoque" onClick={() => setIsMenuOpen(false)} className="text-xl font-serif italic text-neutral-700 hover:text-brand-gold">
               Nossas Joias
             </Link>

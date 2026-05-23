@@ -93,16 +93,10 @@ export const Hero: React.FC<HeroProps> = ({
           className="flex flex-wrap gap-4"
         >
           <Link 
-            to="/colecoes" 
+            to="/estoque" 
             className="bg-brand-gold-gradient text-white px-10 py-4 rounded-full text-[10px] uppercase tracking-widest font-bold hover:opacity-90 transition-opacity shadow-lg"
           >
-            Explorar Coleções
-          </Link>
-          <Link 
-            to="/estoque" 
-            className="border border-brand-gold/30 px-8 py-4 rounded-full text-[10px] uppercase tracking-widest font-bold hover:border-brand-gold transition-colors"
-          >
-            Ver Peças
+            Ver Coleção Completa
           </Link>
         </motion.div>
       </div>

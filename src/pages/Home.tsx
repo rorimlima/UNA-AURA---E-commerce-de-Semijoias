@@ -65,9 +65,7 @@ export const Home: React.FC = () => {
     }
 
     const mapAndSet = (list: any[]) => {
-      const inStockList = list.filter(p => (p.quantidade_estoque || 0) > 0);
-      
-      const mapped = inStockList.map(p => ({
+      const mapped = list.map(p => ({
         ...p,
         name: formatProductName(p.nome || 'Peça Sem Nome'),
         price: (p.preco_venda || 0) / 100,
@@ -235,35 +233,17 @@ export const Home: React.FC = () => {
 
         <SalesTeam />
 
-        <section className="py-24 md:py-32 bg-white">
+        <section className="py-24 md:py-32 bg-white border-t border-brand-gold/10">
           <div className="max-w-7xl mx-auto px-6 md:px-12 text-center">
             <h2 className="text-3xl md:text-5xl font-serif font-light mb-4 text-[#1A1A1A]">Siga nossa Aura</h2>
             <a 
               href="https://www.instagram.com/unaaurafortaleza/" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="text-brand-gold text-[9px] md:text-[10px] uppercase tracking-[0.4em] font-bold mb-12 md:mb-16 block hover:opacity-70 transition-opacity whitespace-nowrap"
+              className="text-brand-gold text-xs uppercase tracking-[0.4em] font-bold block hover:opacity-75 transition-opacity whitespace-nowrap"
             >
               @unaaurafortaleza
             </a>
-
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2">
-              {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div key={i} className="aspect-square relative group overflow-hidden bg-brand-offwhite">
-                  <img 
-                    src={`https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&q=80&w=400&sig=${i+10}`}
-                    alt="Instagram Post"
-                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110"
-                    referrerPolicy="no-referrer"
-                  />
-                  <div className="absolute inset-0 bg-brand-gold/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                    <span className="text-white">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-instagram"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
           </div>
         </section>
       </main>

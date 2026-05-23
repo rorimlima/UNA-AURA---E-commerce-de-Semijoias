@@ -59,8 +59,7 @@ export const Collections: React.FC = () => {
       .eq('colecao_id', colId);
     
     if (data) {
-      const inStockList = data.filter(p => (p.quantidade_estoque || 0) > 0);
-      const mapped = inStockList.map(p => ({
+      const mapped = data.map(p => ({
         ...p,
         name: formatProductName(p.nome || 'Peça Sem Nome'),
         price: (p.preco_venda || 0) / 100,

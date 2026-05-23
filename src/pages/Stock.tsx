@@ -69,9 +69,7 @@ export const Stock: React.FC = () => {
     }
 
     const mapAndSet = (list: any[]) => {
-      const inStockList = list.filter(p => (p.quantidade_estoque || 0) > 0);
-      
-      const mappedData = inStockList.map(p => ({
+      const mappedData = list.map(p => ({
         ...p,
         name: formatProductName(p.nome || 'Peça Sem Nome'),
         price: (p.preco_venda || 0) / 100,
