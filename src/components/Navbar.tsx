@@ -331,7 +331,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onCartOpen }) => {
                   <motion.span
                     key={cartCount}
                     initial={{ scale: 0.4, opacity: 0 }}
-                    animate={{ scale: [1.4, 0.9, 1], opacity: 1 }}
+                    animate={{ scale: 1, opacity: 1 }}
                     exit={{ scale: 0.4, opacity: 0 }}
                     transition={{ type: "spring", stiffness: 450, damping: 14 }}
                     className="absolute -top-1 -right-1 bg-brand-gold text-white text-[9px] min-w-4 h-4 px-1 flex items-center justify-center rounded-full font-bold shadow-sm"
