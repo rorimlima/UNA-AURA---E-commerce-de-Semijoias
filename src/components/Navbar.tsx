@@ -4,7 +4,7 @@ import { useCart } from '../context/CartContext';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { formatCurrency } from '../lib/utils';
-import { supabase } from '../lib/supabase';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
 
 interface NavbarProps {
   onCartOpen: () => void;
@@ -76,6 +76,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onCartOpen }) => {
 
   return (
     <nav className="fixed top-0 left-0 w-full z-50 bg-brand-offwhite/90 backdrop-blur-md border-b border-brand-gold/20">
+      {!isSupabaseConfigured && (
+        <div className="bg-amber-600 text-neutral-100 text-[9px] sm:text-[10px] text-center font-sans py-1.5 px-3 uppercase tracking-[0.1em] font-medium flex items-center justify-center gap-2 border-b border-gold/15">
+          <span>⚠️ BANCO OFFLINE: SUPABASE NÃO CONFIGURADO</span>
+          <span className="hidden lg:inline opacity-80 font-normal">| Adicione VITE_SUPABASE_URL e VITE_SUPABASE_ANON_KEY no painel da Vercel ou no arquivo .env para renderizar dados dinâmicos.</span>
+        </div>
+      )}
       <div className="max-w-7xl mx-auto px-4 md:px-12 h-20 md:h-24 flex items-center justify-between">
         {/* Left Section: Mobile Menu & Desktop Links */}
         <div className="flex-1 flex items-center">
