@@ -11,9 +11,51 @@ import {
   Image as ImageIcon,
   CheckCircle2,
   AlertCircle,
-  Users
+  Users,
+  Layout,
+  Sliders,
+  Globe,
+  Coffee
 } from 'lucide-react';
 import { formatCurrency, formatProductName } from '../../lib/utils';
+
+const CONFIG_SCHEMA = [
+  {
+    category: 'Canais de Contato & Redes Sociais',
+    description: 'Ajuste os links de compartilhamento e o telefone padrão de atendimento.',
+    fields: [
+      { key: 'whatsapp_number', label: 'Número de WhatsApp (DDD + Número, ex: 5585999999999)', placeholder: '5585999999999', type: 'text' },
+      { key: 'instagram_url', label: 'Link do Perfil do Instagram', placeholder: 'https://instagram.com/unaaurafortaleza', type: 'text' }
+    ]
+  },
+  {
+    category: 'Apresentação Principal (Hero Banner)',
+    description: 'Personalize o banner principal no topo do site.',
+    fields: [
+      { key: 'hero_badge', label: 'Selo Superior (Ex: Semijoias de Luxo)', placeholder: 'Semijoias de Luxo', type: 'text' },
+      { key: 'hero_title', label: 'Título Grande da Hero (Use _texto_ para formatar em itálico)', placeholder: 'O brilho que já existe em você.', type: 'textarea' },
+      { key: 'hero_subtitle', label: 'Subtítulo Explicativo', placeholder: 'Peças banhadas a ouro...', type: 'textarea' },
+      { key: 'hero_image', label: 'URL da Imagem de Fundo (Deixe em branco para usar o produto em destaque automaticamente)', placeholder: 'https://images.unsplash.com/...', type: 'text' }
+    ]
+  },
+  {
+    category: 'Curadoria & Seção de Destaques (Catálogo)',
+    description: 'Altere os textos explicativos do catálogo de semijoias.',
+    fields: [
+      { key: 'catalog_badge', label: 'Selo do Catálogo', placeholder: 'Coleção Una Aura', type: 'text' },
+      { key: 'catalog_title', label: 'Título do Catálogo', placeholder: 'Catálogo de Semijoias', type: 'text' },
+      { key: 'catalog_subtitle', label: 'Apresentação das Peças', placeholder: 'Banhadas a ouro...', type: 'textarea' }
+    ]
+  },
+  {
+    category: 'Manifesto da Marca (Sobre Nós)',
+    description: 'Personalize os blocos conceituais e discursos inspiradores exibidos no rodapé.',
+    fields: [
+      { key: 'about_title', label: 'Título do Manifesto', placeholder: 'O Brilho que já existe em você.', type: 'text' },
+      { key: 'about_text', label: 'Corpo do Texto do Manifesto (Citação/Parágrafo)', placeholder: '"Na UNA AURA, não acreditamos que as joias trazem brilho..."', type: 'textarea' }
+    ]
+  }
+];
 
 export const AdminDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'products' | 'settings' | 'clientes'>('products');
@@ -187,9 +229,21 @@ export const AdminDashboard: React.FC = () => {
     }
   };
 
+  const [saveStatus, setSaveStatus] = useState<Record<string, 'idle' | 'saving' | 'saved'>>({});
+
   const updateSetting = async (key: string, value: string) => {
-    await supabase.from('store_settings').update({ value }).eq('key', key);
-    fetchData();
+    setSaveStatus(prev => ({ ...prev, [key]: 'saving' }));
+    try {
+      await supabase.from('store_settings').upsert({ key, value }, { onConflict: 'key' });
+      setSaveStatus(prev => ({ ...prev, [key]: 'saved' }));
+      setTimeout(() => {
+        setSaveStatus(prev => ({ ...prev, [key]: 'idle' }));
+      }, 3000);
+      fetchData();
+    } catch (err) {
+      console.error("Error saving setting:", err);
+      setSaveStatus(prev => ({ ...prev, [key]: 'idle' }));
+    }
   };
 
   return (
@@ -376,29 +430,75 @@ create policy "Permitir leitura publica" on public.clientes for select using (tr
         )}
 
         {activeTab === 'settings' && (
-          <div className="max-w-2xl bg-white rounded-2xl p-8 shadow-sm border border-brand-nude/20 space-y-8">
-            {settings.map(set => (
-              <div key={set.id}>
-                <label className="block text-[10px] uppercase tracking-widest font-bold text-neutral-400 mb-2">
-                  {set.key.replace('_', ' ')}
-                </label>
-                <div className="flex gap-4">
-                  <input 
-                    type="text" 
-                    defaultValue={set.value}
-                    onBlur={(e) => updateSetting(set.key, e.target.value)}
-                    className="flex-1 h-12 px-4 bg-brand-offwhite border border-brand-nude/40 rounded-lg focus:border-brand-gold outline-none"
-                  />
-                  <div className="flex items-center text-brand-gold opacity-30 px-2">
-                    <CheckCircle2 size={24} />
-                  </div>
+          <div className="max-w-4xl space-y-12">
+            <div className="bg-[#FAF8F5] border border-brand-gold/30 p-6 rounded-3xl flex gap-4 text-neutral-800 text-xs items-center max-w-3xl">
+               <div className="p-3 bg-brand-gold/10 text-brand-gold rounded-full border border-brand-gold/20 flex-shrink-0 animate-pulse">
+                <AlertCircle size={20} />
+               </div>
+               <div>
+                 <span className="font-extrabold uppercase tracking-[0.2em] block text-brand-gold text-[10px] mb-1">
+                   Boutique Website Content Builder (CMS)
+                 </span>
+                 Edite as informações abaixo à vontade. Suas alterações são sincronizadas e salvas automaticamente de forma segura no banco de dados e entram em vigor instantaneamente para todas as clientes no momento em que você clica fora do campo (onBlur).
+               </div>
+            </div>
+
+            {CONFIG_SCHEMA.map((section, idx) => (
+              <div key={idx} className="bg-white rounded-3xl p-8 shadow-sm border border-brand-nude/25 space-y-6">
+                <div>
+                  <h3 className="text-xl font-serif italic text-neutral-800 tracking-wide font-medium flex items-center gap-2">
+                    <span className="text-brand-gold">✦</span>{section.category}
+                  </h3>
+                  <p className="text-neutral-400 text-xs mt-1 font-light leading-relaxed">{section.description}</p>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6 border-t border-neutral-100">
+                  {section.fields.map((field) => {
+                    const row = settings.find((s: any) => s.key === field.key);
+                    const currentVal = row ? row.value : '';
+                    const status = saveStatus[field.key] || 'idle';
+
+                    return (
+                      <div key={field.key} className={field.type === 'textarea' ? 'col-span-1 md:col-span-2' : 'col-span-1'}>
+                        <div className="flex justify-between items-baseline mb-2">
+                          <label className="text-[9px] uppercase tracking-widest font-extrabold text-neutral-400 block">
+                            {field.label}
+                          </label>
+                          {status === 'saving' && (
+                            <span className="text-[9px] text-brand-gold font-bold uppercase tracking-widest animate-pulse flex items-center gap-1">
+                              ● Sincronizando...
+                            </span>
+                          )}
+                          {status === 'saved' && (
+                            <span className="text-[9px] text-emerald-600 font-bold uppercase tracking-widest flex items-center gap-1">
+                              ✓ Sincronizado
+                            </span>
+                          )}
+                        </div>
+
+                        {field.type === 'textarea' ? (
+                          <textarea
+                            rows={3}
+                            defaultValue={currentVal}
+                            placeholder={field.placeholder}
+                            onBlur={(e) => updateSetting(field.key, e.target.value)}
+                            className="w-full p-4 bg-brand-offwhite border border-brand-nude/40 rounded-2xl focus:border-brand-gold focus:bg-white outline-none text-xs italic text-neutral-700 leading-relaxed transition-all resize-y shadow-xs"
+                          />
+                        ) : (
+                          <input
+                            type="text"
+                            defaultValue={currentVal}
+                            placeholder={field.placeholder}
+                            onBlur={(e) => updateSetting(field.key, e.target.value)}
+                            className="w-full h-12 px-4 bg-brand-offwhite border border-brand-nude/40 rounded-xl focus:border-brand-gold focus:bg-white outline-none text-xs font-serif italic text-neutral-700 transition-all shadow-xs"
+                          />
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             ))}
-            <div className="bg-brand-nude/20 p-4 rounded-lg flex gap-3 text-neutral-600 text-sm italic">
-               <AlertCircle size={20} className="flex-shrink-0" />
-               As alterações nas configurações são salvas automaticamente ao clicar fora do campo.
-            </div>
           </div>
         )}
 

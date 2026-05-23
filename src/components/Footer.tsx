@@ -1,7 +1,10 @@
 import React from 'react';
 import { Instagram, MapPin, Phone, Mail } from 'lucide-react';
+import { useSettings } from '../context/SettingsContext';
 
 export const Footer: React.FC = () => {
+  const { settings } = useSettings();
+
   return (
     <footer className="bg-white border-t border-brand-gold/20 pt-24 pb-12">
       <div className="max-w-7xl mx-auto px-12 grid grid-cols-1 md:grid-cols-4 gap-16">
@@ -11,7 +14,7 @@ export const Footer: React.FC = () => {
             Nascida para exaltar o brilho que já existe em cada mulher. Design autoral, banho 18k e alta joalheria.
           </p>
           <div className="flex gap-4">
-            <a href="https://www.instagram.com/unaaurafortaleza/" target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-full border border-brand-gold/20 flex items-center justify-center text-neutral-400 hover:text-brand-gold hover:border-brand-gold transition-all">
+            <a href={settings.instagram_url || "https://www.instagram.com/unaaurafortaleza/"} target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-full border border-brand-gold/20 flex items-center justify-center text-neutral-400 hover:text-brand-gold hover:border-brand-gold transition-all">
               <Instagram size={20} />
             </a>
           </div>

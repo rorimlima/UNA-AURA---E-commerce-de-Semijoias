@@ -58,6 +58,16 @@ self.addEventListener('fetch', (event) => {
       .catch(() => {
         // Offline Fallback - look into current caches
         console.log('[Service Worker] Offline Fallback - Loading from Cache');
+        
+        // Notify clients about offline fallback mode
+        self.clients.matchAll().then((clients) => {
+          if (clients && clients.length) {
+            clients.forEach((client) => {
+              client.postMessage({ type: 'OFFLINE_STATUS', offline: true });
+            });
+          }
+        });
+
         return caches.match(event.request).then((cachedResponse) => {
           if (cachedResponse) {
             return cachedResponse;

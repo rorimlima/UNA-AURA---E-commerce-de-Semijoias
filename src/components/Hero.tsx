@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { formatCurrency, formatProductName } from '../lib/utils';
 import { useCart } from '../context/CartContext';
+import { useSettings } from '../context/SettingsContext';
 
 interface HeroProps {
   title?: string;
@@ -12,9 +13,10 @@ interface HeroProps {
 }
 
 export const Hero: React.FC<HeroProps> = ({ 
-  title = <>O brilho que <br/> <span className="italic">já existe</span> <br/> em você.</>, 
-  subtitle = "Peças banhadas a ouro 18k com acabamento de alta joalheria. Projetadas para elevar sua aura." 
+  title, 
+  subtitle 
 }) => {
+  const { settings } = useSettings();
   const [featuredProduct, setFeaturedProduct] = useState<any>(null);
   const { addToCart } = useCart();
 
@@ -55,6 +57,28 @@ export const Hero: React.FC<HeroProps> = ({
     fetchFeatured();
   }, []);
 
+  const renderFormattedText = (text: string) => {
+    if (!text) return '';
+    if (text.includes('<') || text.includes('_') || text.includes('\n')) {
+      let formatted = text
+        .replace(/_([^_]+)_/g, '<span class="italic">$1</span>')
+        .replace(/\n/g, '<br />');
+      return <span dangerouslySetInnerHTML={{ __html: formatted }} />;
+    }
+    // Default default styling if no special characters are configured
+    if (text === 'O brilho que já existe em você.') {
+      return (
+        <>
+          O brilho que <br/> <span className="italic">já existe</span> <br/> em você.
+        </>
+      );
+    }
+    return text;
+  };
+
+  const finalTitle = title || settings.hero_title;
+  const finalSubtitle = subtitle || settings.hero_subtitle;
+
   return (
     <section className="relative min-h-screen flex flex-col md:flex-row items-center bg-brand-offwhite pt-24 overflow-hidden">
       {/* Left Content */}
@@ -65,7 +89,7 @@ export const Hero: React.FC<HeroProps> = ({
           transition={{ duration: 0.8 }}
           className="text-[10px] uppercase tracking-[0.4em] text-brand-gold font-bold mb-8"
         >
-          Semijoias de Luxo
+          {settings.hero_badge || "Semijoias de Luxo"}
         </motion.div>
         
         <motion.h1 
@@ -74,7 +98,7 @@ export const Hero: React.FC<HeroProps> = ({
           transition={{ duration: 0.8, delay: 0.2 }}
           className="text-4xl sm:text-6xl md:text-8xl font-serif font-light mb-6 md:mb-8 leading-[1.1] md:leading-[0.95] text-[#1A1A1A]"
         >
-          {title}
+          {renderFormattedText(finalTitle)}
         </motion.h1>
 
         <motion.p 
@@ -83,7 +107,7 @@ export const Hero: React.FC<HeroProps> = ({
           transition={{ duration: 0.8, delay: 0.4 }}
           className="text-neutral-500 text-xs md:text-base font-light mb-12 max-w-[280px] md:max-w-sm leading-relaxed italic"
         >
-          {subtitle}
+          {finalSubtitle}
         </motion.p>
 
         <motion.div
@@ -113,7 +137,7 @@ export const Hero: React.FC<HeroProps> = ({
         >
           <div className="w-full h-full rounded-[100px] bg-brand-offwhite flex flex-col items-center justify-center text-center overflow-hidden relative shadow-2xl">
             <img 
-              src={featuredProduct?.image_url || "https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&q=80&w=800"} 
+              src={settings.hero_image || featuredProduct?.image_url || "https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&q=80&w=800"} 
               alt={featuredProduct?.name || "Premium Collection"} 
               className="absolute inset-0 w-full h-full object-cover opacity-90"
               referrerPolicy="no-referrer"

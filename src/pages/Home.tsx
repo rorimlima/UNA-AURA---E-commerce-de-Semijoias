@@ -11,8 +11,10 @@ import { ChevronDown, SlidersHorizontal } from 'lucide-react';
 
 import { formatProductName } from '../lib/utils';
 import { ProductDetailModal } from '../components/ProductDetailModal';
+import { useSettings } from '../context/SettingsContext';
 
 export const Home: React.FC = () => {
+  const { settings } = useSettings();
   const [products, setProducts] = useState<any[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
@@ -105,10 +107,10 @@ export const Home: React.FC = () => {
             {/* Header Content with Compact Layout */}
             <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-8 border-l border-brand-gold/35 pl-5 md:pl-8">
               <div className="max-w-xl">
-                <span className="text-brand-gold text-[9px] uppercase tracking-[0.4em] font-bold mb-3 block">Coleção Una Aura</span>
-                <h2 className="text-3xl md:text-5xl font-serif font-light mb-4">Catálogo de Semijoias</h2>
+                <span className="text-brand-gold text-[9px] uppercase tracking-[0.4em] font-bold mb-3 block">{settings.catalog_badge || "Coleção Una Aura"}</span>
+                <h2 className="text-3xl md:text-5xl font-serif font-light mb-4">{settings.catalog_title || "Catálogo de Semijoias"}</h2>
                 <p className="text-neutral-500 font-light text-xs md:text-sm italic leading-relaxed">
-                  Banhadas a ouro 18k com brilho inigualável de alta joalheria. Encontre a peça ideal para exalar sua aura singular.
+                  {settings.catalog_subtitle || "Banhadas a ouro 18k com brilho inigualável de alta joalheria. Encontre a peça ideal para exalar sua aura singular."}
                 </p>
               </div>
 
@@ -218,9 +220,9 @@ export const Home: React.FC = () => {
         {/* About Section */}
         <section id="about" className="py-24 md:py-32 bg-brand-offwhite relative overflow-hidden">
            <div className="max-w-5xl mx-auto px-6 relative z-10 flex flex-col items-center text-center">
-              <h2 className="text-3xl md:text-5xl lg:text-6xl italic text-neutral-800 mb-8 md:mb-12">O Brilho que já existe em você.</h2>
+              <h2 className="text-3xl md:text-5xl lg:text-6xl italic text-neutral-800 mb-8 md:mb-12">{settings.about_title || "O Brilho que já existe em você."}</h2>
               <p className="text-base md:text-xl text-neutral-600 font-light max-w-3xl leading-relaxed mb-12 italic">
-                "Na UNA AURA, não acreditamos que as joias trazem brilho. Acreditamos que o brilho já é parte da sua essência. Nossas peças são apenas o reflexo dessa luz interior, o elo entre sua alma e sua presença no mundo."
+                {settings.about_text || "\"Na UNA AURA, não acreditamos que as joias trazem brilho. Acreditamos que o brilho já é parte da sua essência. Nossas peças são apenas o reflexo dessa luz interior, o elo entre sua alma e sua presença no mundo.\""}
               </p>
               <div className="w-12 h-12 md:w-16 md:h-16 rounded-full border border-brand-gold flex items-center justify-center">
                 <div className="w-2 h-2 bg-brand-gold rounded-full animate-ping" />
