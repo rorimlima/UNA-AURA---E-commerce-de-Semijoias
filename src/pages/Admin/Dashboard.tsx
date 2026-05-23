@@ -15,7 +15,8 @@ import {
   Layout,
   Sliders,
   Globe,
-  Coffee
+  Coffee,
+  Upload
 } from 'lucide-react';
 import { formatCurrency, formatProductName } from '../../lib/utils';
 
@@ -246,6 +247,17 @@ export const AdminDashboard: React.FC = () => {
     }
   };
 
+  const handleSettingChangeLocally = (key: string, value: string) => {
+    setSettings(prev => {
+      const exists = prev.some(s => s.key === key);
+      if (exists) {
+        return prev.map(s => s.key === key ? { ...s, value } : s);
+      } else {
+        return [...prev, { key, value }];
+      }
+    });
+  };
+
   return (
     <div className="min-h-screen bg-brand-offwhite flex font-sans">
       {/* Sidebar */}
@@ -459,7 +471,7 @@ create policy "Permitir leitura publica" on public.clientes for select using (tr
                     const status = saveStatus[field.key] || 'idle';
 
                     return (
-                      <div key={field.key} className={field.type === 'textarea' ? 'col-span-1 md:col-span-2' : 'col-span-1'}>
+                      <div key={field.key} className={(field.type === 'textarea' || field.key === 'hero_image') ? 'col-span-1 md:col-span-2' : 'col-span-1'}>
                         <div className="flex justify-between items-baseline mb-2">
                           <label className="text-[9px] uppercase tracking-widest font-extrabold text-neutral-400 block">
                             {field.label}
@@ -476,19 +488,128 @@ create policy "Permitir leitura publica" on public.clientes for select using (tr
                           )}
                         </div>
 
-                        {field.type === 'textarea' ? (
+                        {field.key === 'hero_image' ? (
+                          <div className="space-y-4">
+                            {/* Live background preview */}
+                            <div className="relative h-44 rounded-2xl overflow-hidden border border-brand-gold/15 bg-brand-offwhite group">
+                              {currentVal ? (
+                                <>
+                                  <img 
+                                    src={currentVal} 
+                                    alt="Hero Preview" 
+                                    className="w-full h-full object-cover transition-transform group-hover:scale-102 duration-500"
+                                    referrerPolicy="no-referrer"
+                                  />
+                                  <div className="absolute inset-x-0 bottom-0 bg-neutral-950/70 p-3 flex justify-between items-center backdrop-blur-xs">
+                                    <span className="text-[10px] text-neutral-350 font-mono truncate max-w-xs">{currentVal}</span>
+                                    <button 
+                                      type="button"
+                                      onClick={() => {
+                                        handleSettingChangeLocally(field.key, '');
+                                        updateSetting(field.key, '');
+                                      }}
+                                      className="text-[9px] uppercase font-bold text-red-400 hover:text-red-350 tracking-wider transition-colors"
+                                    >
+                                      Remover / Usar Produto Destaque
+                                    </button>
+                                  </div>
+                                </>
+                              ) : (
+                                <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center text-neutral-450">
+                                  <ImageIcon size={32} className="text-neutral-300 mb-2" />
+                                  <p className="text-xs italic leading-relaxed">Nenhuma imagem personalizada carregada.</p>
+                                  <p className="text-[10px] leading-relaxed mt-1 text-neutral-400 max-w-sm">O layout principal usará o produto em destaque como imagem de fundo de forma automatizada.</p>
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Options to change: URL, Upload or presets */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              {/* Option A: Paste URL / Input */}
+                              <div className="space-y-2">
+                                <span className="text-[9px] uppercase font-extrabold text-neutral-400 tracking-wider block">Opção A: Endereço (URL) da Imagem</span>
+                                <input
+                                  type="text"
+                                  value={currentVal}
+                                  placeholder={field.placeholder}
+                                  onChange={(e) => handleSettingChangeLocally(field.key, e.target.value)}
+                                  onBlur={(e) => updateSetting(field.key, e.target.value)}
+                                  className="w-full h-11 px-4 bg-brand-offwhite border border-brand-nude/40 rounded-xl focus:border-brand-gold focus:bg-white outline-none text-xs font-serif italic text-neutral-700 transition-all shadow-xs"
+                                />
+                              </div>
+
+                              {/* Option B: Personal File Upload */}
+                              <div className="space-y-2">
+                                <span className="text-[9px] uppercase font-extrabold text-neutral-400 tracking-wider block">Opção B: Carregar do Dispositivo</span>
+                                <label className="flex items-center justify-center gap-2 w-full h-11 px-4 bg-white border border-dashed border-brand-gold/35 hover:border-brand-gold hover:bg-brand-gold/5 rounded-xl cursor-pointer transition-all duration-300 text-xs font-bold text-neutral-700 shadow-xs">
+                                  <Upload size={14} className="text-brand-gold" />
+                                  <span>Escolha uma imagem...</span>
+                                  <input 
+                                    type="file" 
+                                    accept="image/*" 
+                                    className="hidden" 
+                                    onChange={(e) => {
+                                      const file = e.target.files?.[0];
+                                      if (file) {
+                                        const reader = new FileReader();
+                                        reader.onloadend = () => {
+                                          const result = reader.result as string;
+                                          handleSettingChangeLocally(field.key, result);
+                                          updateSetting(field.key, result);
+                                        };
+                                        reader.readAsDataURL(file);
+                                      }
+                                    }}
+                                  />
+                                </label>
+                              </div>
+                            </div>
+
+                            {/* Option C: Curator Presets */}
+                            <div className="space-y-2 pt-2">
+                              <span className="text-[9px] uppercase font-extrabold text-neutral-400 tracking-wider block">Opção C: Sugestões de Fotos de Alta Joalheria (Um-clique)</span>
+                              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                                {[
+                                  { name: 'Joias de Luxo', url: 'https://images.unsplash.com/photo-1599643477877-530eb83abc8e?auto=format&fit=crop&q=80&w=800' },
+                                  { name: 'Brilho Único', url: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&q=80&w=800' },
+                                  { name: 'Minimalista', url: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&q=80&w=800' },
+                                  { name: 'Estilo e Moda', url: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&q=80&w=800' }
+                                ].map((preset, pIdx) => (
+                                  <button
+                                    key={pIdx}
+                                    type="button"
+                                    onClick={() => {
+                                      handleSettingChangeLocally(field.key, preset.url);
+                                      updateSetting(field.key, preset.url);
+                                    }}
+                                    className={`relative h-12 rounded-lg overflow-hidden border text-left p-1 transition-all ${
+                                      currentVal === preset.url ? 'border-brand-gold ring-1 ring-brand-gold/30 scale-102 font-bold' : 'border-neutral-200 hover:border-brand-gold/30'
+                                    }`}
+                                  >
+                                    <div className="absolute inset-0 bg-neutral-900/50 z-10 hover:bg-neutral-900/35 transition-all flex items-center justify-center p-1 text-center">
+                                      <span className="text-[8px] text-white font-bold leading-tight drop-shadow-md text-center">{preset.name}</span>
+                                    </div>
+                                    <img src={preset.url} alt="" className="w-full h-full object-cover" />
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        ) : field.type === 'textarea' ? (
                           <textarea
                             rows={3}
-                            defaultValue={currentVal}
+                            value={currentVal}
                             placeholder={field.placeholder}
+                            onChange={(e) => handleSettingChangeLocally(field.key, e.target.value)}
                             onBlur={(e) => updateSetting(field.key, e.target.value)}
                             className="w-full p-4 bg-brand-offwhite border border-brand-nude/40 rounded-2xl focus:border-brand-gold focus:bg-white outline-none text-xs italic text-neutral-700 leading-relaxed transition-all resize-y shadow-xs"
                           />
                         ) : (
                           <input
                             type="text"
-                            defaultValue={currentVal}
+                            value={currentVal}
                             placeholder={field.placeholder}
+                            onChange={(e) => handleSettingChangeLocally(field.key, e.target.value)}
                             onBlur={(e) => updateSetting(field.key, e.target.value)}
                             className="w-full h-12 px-4 bg-brand-offwhite border border-brand-nude/40 rounded-xl focus:border-brand-gold focus:bg-white outline-none text-xs font-serif italic text-neutral-700 transition-all shadow-xs"
                           />
